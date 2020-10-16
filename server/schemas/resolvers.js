@@ -33,10 +33,10 @@ const resolvers = {
                 .populate('friends');
           
               return userData;
-        }
+            }
           
             throw new AuthenticationError('Not logged in');
-          }
+        }
     },
     Mutation: {
         addUser: async (parent, args) => {
@@ -101,7 +101,7 @@ const resolvers = {
           
             const token = signToken(user);
             return { token, user };
-          }
+        }
     }
 };
 
