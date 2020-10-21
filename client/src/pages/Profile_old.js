@@ -12,37 +12,26 @@ const Profile = () => {
     Recall Route component from App.js:
     <Route exact path="/profile/:username?" component={Profile} /> 
   */
-  const { username } = useParams();
+  const { username: userParam } = useParams();
 
-  const { loading, data } = useQuery(username ? QUERY_USER : QUERY_ME, {
-    variables: { username }
+  const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
+    variables: { username: userParam }
   });
 
-  const user = data?.me || data?.user || {};
-
+  const user = data?.user || data?.user || {};
+  // redirect to personal rofile page if username is the logged-in user's 
+  if (Auth.loggedIn() && Auth.getProfile().data.username.toLowerCase() === userParam.toLowerCase()) {
+    return <Redirect to="/profile" />;
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // redirect to personal profile page if username is the logged-in user's 
-  if (username !== undefined) {
-    if (Auth.loggedIn() && Auth.getProfile().data.username.toLowerCase() === username.toLowerCase()) {
-      return <Redirect to="/profile" />;
-    }
-  }
-
-  if (!user?.username) {
-    return (
-      <h4>
-        You need to be logged in to see this page. Use the navigation links above to sign up or log in!
-      </h4>
-    );
-  }
   return (
     <div>
       <div className="flex-row mb-3">
         <h2 className="bg-dark text-secondary p-3 display-inline-block">
-          Viewing {username ? `${user.username}'s` : 'your'} profile.
+          Viewing {userParam ? `${user.username}'s` : 'your'} profile.
         </h2>
       </div>
 
